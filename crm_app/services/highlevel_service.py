@@ -13,13 +13,21 @@ class HighLevelService:
         self.location_id = location_id
         self.headers = {
             "Authorization": f"Bearer {self.access_token}",
-            "Location": self.location_id
+            "Accept": "application/json",
+            "Version": "2021-07-28"
         }
 
     def get_contacts(self):
-        url = f"{self.BASE_URL}/contacts"
-        response = requests.get(url, headers=self.headers)
+        url = f"{self.BASE_URL}/contacts/"
+        params = {
+            "locationId": self.location_id
+        }
+        logger.error(f"GET {url} with headers: {self.headers} and params: {params}")
+    
+        response = requests.get(url, headers=self.headers, params=params)
+        logger.error(f"Response: {response.status_code} - {response.text}")
         response.raise_for_status()
+
         contacts = response.json().get("contacts", [])
         logger.info(f"Retrieved {len(contacts)} contacts.")
         return contacts
@@ -35,8 +43,15 @@ class HighLevelService:
     
     def get_custom_fields(self):
         url = f"{self.BASE_URL}/locations/{self.location_id}/customFields"
-        response = requests.get(url, headers=self.headers)
+        params = {
+            "model": "contact"
+        }
+        logger.error(f"GET {url} with params: {params}")
+    
+        response = requests.get(url, headers=self.headers, params=params)
+        logger.error(f"Response: {response.status_code} - {response.text}")
         response.raise_for_status()
+
         fields = response.json().get("customFields", [])
         logger.info(f"Retrieved {len(fields)} custom fields.")
         return fields

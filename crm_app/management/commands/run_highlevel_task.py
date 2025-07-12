@@ -17,17 +17,10 @@ class Command(BaseCommand):
     help = "Run HighLevel contact update task"
 
     def handle(self, *args, **kwargs):
-        scopes = [
-            "contacts.readonly",
-            "contacts.writeonly",
-            "locations/customFields.readonly",
-            "locations/customFields.writeonly"
-        ]
-        scope_param = urllib.parse.quote(" ".join(scopes))
 
         logger.info("STEP 1 : Visit the URL to get authorization code")
         auth_url = (
-            "https://marketplace.gohighlevel.com/oauth/chooselocation?response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%2F&client_id=6870dbd5219830588889ff2f-mcyylbg6&scope=contacts.readonly+contacts.write+locations%2FcustomFields.readonly+locations%2FcustomFields.write"
+            "https://marketplace.leadconnectorhq.com/oauth/chooselocation?response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%2F&client_id=6870dbd5219830588889ff2f-mcyylbg6&scope=contacts.readonly+contacts.write+locations%2FcustomFields.readonly+locations%2FcustomFields.write"
         )
         logger.info(f"Visit this URL and login: {auth_url}")
         auth_code = input("Paste the code from redirected URL: ").strip()
@@ -66,12 +59,17 @@ class Command(BaseCommand):
             "redirect_uri": REDIRECT_URI,
         }
 
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+
         try:
-            res = requests.post(token_url, json=payload)
+            res = requests.post(token_url, data=payload, headers=headers)
             res.raise_for_status()
             data = res.json()
-            logger.info(f"Access token retrieved successfully")
+            logger.info("Access token retrieved successfully")
             return data
         except requests.RequestException as e:
             logger.error(f"Token exchange failed: {e}")
+            logger.error(f"Response: {res.text if 'res' in locals() else 'No response'}")
             return None
