@@ -22,7 +22,7 @@ class HighLevelService:
         params = {
             "locationId": self.location_id
         }
-        logger.error(f"GET {url} with headers: {self.headers} and params: {params}")
+        logger.info(f"GET {url} with headers: {self.headers} and params: {params}")
     
         response = requests.get(url, headers=self.headers, params=params)
         logger.error(f"Response: {response.status_code} - {response.text}")
@@ -46,7 +46,7 @@ class HighLevelService:
         params = {
             "model": "contact"
         }
-        logger.error(f"GET {url} with params: {params}")
+        logger.info(f"GET {url} with params: {params}")
     
         response = requests.get(url, headers=self.headers, params=params)
         logger.error(f"Response: {response.status_code} - {response.text}")
