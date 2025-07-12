@@ -20,7 +20,11 @@ class Command(BaseCommand):
 
         logger.info("STEP 1 : Visit the URL to get authorization code")
         auth_url = (
-            "https://marketplace.leadconnectorhq.com/oauth/chooselocation?response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%2F&client_id=6870dbd5219830588889ff2f-mcyylbg6&scope=contacts.readonly+contacts.write+locations%2FcustomFields.readonly+locations%2FcustomFields.write"
+            "https://marketplace.leadconnectorhq.com/oauth/chooselocation?"
+            f"response_type=code&"
+            f"client_id={CLIENT_ID}&"
+            f"redirect_uri={urllib.parse.quote(REDIRECT_URI)}&"
+            f"scope=contacts.readonly+contacts.write+locations%2FcustomFields.readonly"
         )
         logger.info(f"Visit this URL and login: {auth_url}")
         auth_code = input("Paste the code from redirected URL: ").strip()

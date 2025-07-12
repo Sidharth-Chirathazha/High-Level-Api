@@ -59,7 +59,7 @@ class HighLevelService:
     def get_custom_field_id_by_name(self, name):
         fields = self.get_custom_fields()
         for field in fields:
-            if fields["name"] == name:
+            if field["name"] == name:
                 logger.info(f"Found custom field ID: {field['id']}")
                 return field["id"]
         logger.warning(f"Custom field '{name}' not found.")
@@ -67,11 +67,16 @@ class HighLevelService:
     
     def update_contact_custom_field(self, contact_id, field_id, value):
         url = f"{self.BASE_URL}/contacts/{contact_id}"
+        headers = self.headers.copy()
+        headers["Content-Type"] = "application/json"
         payload = {
-            "customField":{
-                field_id: value
-            }
+            "customFields": [
+                {
+                    "id": field_id,
+                    "field_value": value
+                }
+            ]
         }
-        response = requests.put(url, json=payload, headers=self.headers)
+        response = requests.put(url, json=payload, headers=headers)
         logger.info(f"Update contact response: {response.status_code} - {response.text}")
         return response.status_code == 200
